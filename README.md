@@ -2,11 +2,11 @@
 
 This bot is just an example and template for using the openshock integration
 
-For openshock diy setup, see the docs in the bsky-event-handlers repo
+For openshock diy setup, see the docs in the [bsky-event-handlers repo](https://github.com/juni-b-queer/bsky-event-handlers/blob/beta/src/integrations/openshock/examples/OpenShockDIYGuide.md)
 
 ## Bot setup
 ***The bot is a work in progress*** \
-There are only two built in handlers, but you can add more!
+There are five built in handlers, but you can add more!
 
 
 ### Build and configure locally
