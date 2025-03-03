@@ -1,24 +1,17 @@
 import {
-    BadBotHandler,
     DebugLog,
-    GoodBotHandler,
+    DebugLogAction,
     HandlerAgent,
-    InputEqualsValidator,
     JetstreamSubscription,
-    LogMessageAction,
-    ReplyingToBotValidator,
+    LikeOfPost,
+    LikeOfUser,
     MessageHandler,
-    IntervalSubscription,
-    IntervalSubscriptionHandlers,
-    AbstractHandler,
-    IsSpecifiedTimeValidator,
-    CreateSkeetAction,
+    NewFollowerForUserValidator,
     OpenshockClient,
     OpenshockShockAction,
-    LikeOfUser,
-    LikeOfPost,
+    OpenshockVibrateAction,
     PostedByUserValidator,
-    NewFollowerForUserValidator, OpenshockVibrateAction
+    ReplyingToBotValidator
 } from 'bsky-event-handlers';
 
 const shockBotAgent = new HandlerAgent(
@@ -42,12 +35,13 @@ const ShockOnReplyHandler = new MessageHandler(
     //Action
     [
         OpenshockShockAction.make(
-        openshockClient,              // An instance of OpenshockClient
-        ['device1'],  // Static list of shocker IDs
-        25,                  // Intensity: 25%
-        1000,                // Duration: 1 second
-        true                // Exclusive mode enabled
-        )
+            openshockClient,              // An instance of OpenshockClient
+            ['device1'],  // Static list of shocker IDs
+            25,                  // Intensity: 25%
+            1000,                // Duration: 1 second
+            true                // Exclusive mode enabled
+        ),
+        DebugLogAction.make('SHOCK', 'Shock on reply', 'info')
     ],
 
     //Bsky agent
@@ -57,7 +51,7 @@ const ShockOnReplyHandler = new MessageHandler(
 /** Shock when the user posts */
 const ShockOnUserPostHandler = new MessageHandler(
     // Validator
-    [PostedByUserValidator.make()],
+    [PostedByUserValidator.make('did:plc:CHANGEME')],
 
     //Action
     [
@@ -67,7 +61,8 @@ const ShockOnUserPostHandler = new MessageHandler(
             25,                  // Intensity: 25%
             1000,                // Duration: 1 second
             true                // Exclusive mode enabled
-        )
+        ),
+        DebugLogAction.make('SHOCK', 'Shock on user post', 'info')
     ],
 
     //Bsky agent
@@ -83,7 +78,9 @@ const ShockOnLikeHandler = new MessageHandler(
         25,                  // Intensity: 25%
         1000,                // Duration: 1 second
         true,                // Exclusive mode enabled
-    )],
+    ),
+        DebugLogAction.make('SHOCK', 'Shock on like', 'info')
+    ],
     shockBotAgent
 )
 
@@ -94,11 +91,13 @@ const ShockOnLikeOfPostHandler = new MessageHandler(
     [LikeOfPost.make('at://did:plc:CHANGEME/app.bsky.feed.post/rkeyCHANGEME')],
     [OpenshockShockAction.make(
         openshockClient,     // An instance of OpenshockClient
-        ['device2'],         // Static list of shocker IDs
+        ['device1'],         // Static list of shocker IDs
         25,                  // Intensity: 25%
         1000,                // Duration: 1 second
         true,                // Exclusive mode enabled
-    )],
+    ),
+        DebugLogAction.make('SHOCK', 'Shock on like of post', 'info')
+    ],
     shockBotAgent
 )
 
@@ -109,11 +108,13 @@ const VibrateOnNewFollow = new MessageHandler(
     [NewFollowerForUserValidator.make()],
     [OpenshockVibrateAction.make(
         openshockClient,     // An instance of OpenshockClient
-        ['device2'],         // Static list of shocker IDs
+        ['device1'],         // Static list of shocker IDs
         25,                  // Intensity: 25%
-        1000,                // Duration: 1 second
+        2000,                // Duration: 2 second
         true,                // Exclusive mode enabled
-    )],
+    ),
+        DebugLogAction.make('VIBRATE', 'vibrate on follow', 'info')
+    ],
     shockBotAgent
 )
 
@@ -146,7 +147,7 @@ async function initialize() {
     );
 }
 
-initialize().then(() =>{
+initialize().then(() => {
     jetstreamSubscription.createSubscription()
     DebugLog.info("INIT", 'Initialized!')
 });
