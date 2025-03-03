@@ -23,8 +23,8 @@ import {
 
 const shockBotAgent = new HandlerAgent(
     'shock-bot',
-    <string>Bun.env.TEST_BSKY_HANDLE,
-    <string>Bun.env.TEST_BSKY_PASSWORD
+    <string>Bun.env.SHOCKBOT_BSKY_HANDLE,
+    <string>Bun.env.SHOCKBOT_BSKY_PASSWORD
 );
 
 const openshockClient = new OpenshockClient(<string>Bun.env.OPENSHOCK_API_TOKEN);

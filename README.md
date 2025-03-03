@@ -44,8 +44,6 @@ OPENSHOCK_API_TOKEN=
 
 #SESSION_DATA_PATH=
 
-# Optional parameters depending on how you'll run the bot
-#OPTIONAL_URL=
 
 ```
 
@@ -80,9 +78,10 @@ The pre-existing handlers included are
 - Vibrate when someone follows you
 
 ### Run in development
-
+Start jetstream \
 `docker compose up -d jetstream`
 
+Start the bot \
 `bun run ./src/index.ts`
 
 ### Building and running as a container
