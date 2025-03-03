@@ -12,7 +12,13 @@ import {
     IntervalSubscriptionHandlers,
     AbstractHandler,
     IsSpecifiedTimeValidator,
-    CreateSkeetAction, OpenshockClient, OpenshockShockAction, LikeOfUser, LikeOfPost, PostedByUserValidator
+    CreateSkeetAction,
+    OpenshockClient,
+    OpenshockShockAction,
+    LikeOfUser,
+    LikeOfPost,
+    PostedByUserValidator,
+    NewFollowerForUserValidator, OpenshockVibrateAction
 } from 'bsky-event-handlers';
 
 const shockBotAgent = new HandlerAgent(
@@ -84,12 +90,26 @@ const ShockOnLikeHandler = new MessageHandler(
 
 /** Shocks when the given post gets a like */
 const ShockOnLikeOfPostHandler = new MessageHandler(
-
     // change to valid a URI. Update the DID and the RKEY to the correct values for the post
     [LikeOfPost.make('at://did:plc:CHANGEME/app.bsky.feed.post/rkeyCHANGEME')],
     [OpenshockShockAction.make(
-        openshockClient,              // An instance of OpenshockClient
-        ['device2'],  // Static list of shocker IDs
+        openshockClient,     // An instance of OpenshockClient
+        ['device2'],         // Static list of shocker IDs
+        25,                  // Intensity: 25%
+        1000,                // Duration: 1 second
+        true,                // Exclusive mode enabled
+    )],
+    shockBotAgent
+)
+
+
+/** Vibrates when the user gets a new follower */
+const VibrateOnNewFollow = new MessageHandler(
+    // change to valid a URI. Update the DID and the RKEY to the correct values for the post
+    [NewFollowerForUserValidator.make()],
+    [OpenshockVibrateAction.make(
+        openshockClient,     // An instance of OpenshockClient
+        ['device2'],         // Static list of shocker IDs
         25,                  // Intensity: 25%
         1000,                // Duration: 1 second
         true,                // Exclusive mode enabled
@@ -109,9 +129,13 @@ let handlers = {
             ShockOnLikeHandler,
             ShockOnLikeOfPostHandler
         ]
+    },
+    follow: {
+        c: [
+            VibrateOnNewFollow
+        ]
     }
 }
-
 
 
 async function initialize() {

@@ -77,6 +77,7 @@ The pre-existing handlers included are
 - Shock when you post
 - Shock when someone likes a post of yours
 - Shock when someone likes a specific post
+- Vibrate when someone follows you
 
 ### Run in development
 
