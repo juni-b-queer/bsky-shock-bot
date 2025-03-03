@@ -1,0 +1,22 @@
+{
+  "name": "bsky-shock-bot",
+  "description": "Bsky-shock-bot template",
+  "version": "0.0.0",
+  "author": "Juni <june@juniper-bender.tech>",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "bun build --target=bun ./src/index.ts --outfile=./build/index.ts"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "bsky-event-handlers": "link:bsky-event-handlers",
+    "@atproto/api": "^0.13.19"
+  },
+  "license": "MIT"
+}
