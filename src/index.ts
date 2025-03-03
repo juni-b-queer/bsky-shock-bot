@@ -12,7 +12,7 @@ import {
     IntervalSubscriptionHandlers,
     AbstractHandler,
     IsSpecifiedTimeValidator,
-    CreateSkeetAction, OpenshockClient, OpenshockShockAction, LikeOfUser
+    CreateSkeetAction, OpenshockClient, OpenshockShockAction, LikeOfUser, LikeOfPost, PostedByUserValidator
 } from 'bsky-event-handlers';
 
 const shockBotAgent = new HandlerAgent(
@@ -28,7 +28,7 @@ const openshockClient = new OpenshockClient(<string>Bun.env.OPENSHOCK_API_TOKEN)
  */
 let jetstreamSubscription: JetstreamSubscription;
 
-/** Shocks when the user gets a reply*/
+/** Shocks when the user gets a reply */
 const ShockOnReplyHandler = new MessageHandler(
     // Validator
     [ReplyingToBotValidator.make()],
@@ -41,6 +41,26 @@ const ShockOnReplyHandler = new MessageHandler(
         25,                  // Intensity: 25%
         1000,                // Duration: 1 second
         true                // Exclusive mode enabled
+        )
+    ],
+
+    //Bsky agent
+    shockBotAgent
+)
+
+/** Shock when the user posts */
+const ShockOnUserPostHandler = new MessageHandler(
+    // Validator
+    [PostedByUserValidator.make()],
+
+    //Action
+    [
+        OpenshockShockAction.make(
+            openshockClient,              // An instance of OpenshockClient
+            ['device1'],  // Static list of shocker IDs
+            25,                  // Intensity: 25%
+            1000,                // Duration: 1 second
+            true                // Exclusive mode enabled
         )
     ],
 
@@ -62,15 +82,32 @@ const ShockOnLikeHandler = new MessageHandler(
 )
 
 
+/** Shocks when the given post gets a like */
+const ShockOnLikeOfPostHandler = new MessageHandler(
+
+    // change to valid a URI. Update the DID and the RKEY to the correct values for the post
+    [LikeOfPost.make('at://did:plc:CHANGEME/app.bsky.feed.post/rkeyCHANGEME')],
+    [OpenshockShockAction.make(
+        openshockClient,              // An instance of OpenshockClient
+        ['device2'],  // Static list of shocker IDs
+        25,                  // Intensity: 25%
+        1000,                // Duration: 1 second
+        true,                // Exclusive mode enabled
+    )],
+    shockBotAgent
+)
+
 let handlers = {
     post: {
         c: [
             ShockOnReplyHandler,
+            ShockOnUserPostHandler
         ]
     },
     like: {
         c: [
             ShockOnLikeHandler,
+            ShockOnLikeOfPostHandler
         ]
     }
 }
